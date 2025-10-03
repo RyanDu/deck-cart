@@ -1,4 +1,5 @@
 using Deck.Api.Data;
+using Deck.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ builder.Services.AddSwaggerGen();
 var conn = builder.Configuration.GetConnectionString("Default") ?? "Data Source=deck.db";
 builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlite(conn));
+
+builder.Services.AddScoped<ICartService, CartService>();
 
 var app = builder.Build();
 
