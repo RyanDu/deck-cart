@@ -23,5 +23,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             new User { Id = 1, Name = "User 1" },
             new User { Id = 2, Name = "User 2" }
         );
+
+        modelBuilder.Entity<CartHistory>()
+        .HasIndex(h => new { h.UserId, h.SnapshotAt });
     }
 }
