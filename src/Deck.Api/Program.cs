@@ -1,3 +1,10 @@
+using System.Diagnostics;
+using Serilog;
+using Serilog.Enrichers.Span;
+using OpenTelemetry;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Metrics;
 using System.Text;
 using Deck.Api.Data;
 using Deck.Api.Services;
@@ -9,13 +16,51 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 
+// Serilog initialize
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .Enrich.WithEnvironmentName()
+    .Enrich.WithProcessId()
+    .Enrich.WithThreadId()
+    .Enrich.WithSpan()
+    .WriteTo.Console()
+    .CreateLogger();
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
 
 // Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add Serilog config
+const string serviceName = "deck-cart-api";
+
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(rb => rb.AddService(serviceName))
+    .WithTracing(t =>
+    {
+        t.AddAspNetCoreInstrumentation(o =>
+        {
+            // record header
+            o.RecordException = true;
+            o.Filter = http => true;
+        });
+        t.AddHttpClientInstrumentation();
+
+        // Add local console
+        t.AddConsoleExporter();
+    })
+    .WithMetrics(m =>
+    {
+        m.AddAspNetCoreInstrumentation();
+        m.AddHttpClientInstrumentation();
+        m.AddRuntimeInstrumentation();
+        m.AddConsoleExporter();
+    });
+
+// Fluent validation initial config
 builder.Services.AddFluentValidationAutoValidation(options =>
 {
     options.DisableDataAnnotationsValidation = true;
@@ -95,6 +140,11 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+// Using log
+Activity.DefaultIdFormat = ActivityIdFormat.W3C;
+Activity.ForceDefaultIdFormat = true;
+app.UseSerilogRequestLogging();
 
 // Apply migrations at startup
 using (var scope = app.Services.CreateScope())
