@@ -1,9 +1,11 @@
 using Deck.Api.DTOs;
 using Deck.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Deck.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("cart")]
 public class CartController(ICartService cartService) : ControllerBase
