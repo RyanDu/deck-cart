@@ -8,6 +8,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<User> Users => Set<User>();
     public DbSet<Item> Items => Set<Item>();
     public DbSet<CartItem> CartItems => Set<CartItem>();
+    public DbSet<CartHistory> CartHistory => Set<CartHistory>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -23,8 +24,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         );
 
         modelBuilder.Entity<User>().HasData(
-            new User { Id = 1, Name = "User 1", CreatedDateTime = seedAtUtc, ModifiedDateTime = seedAtUtc },
-            new User { Id = 2, Name = "User 2", CreatedDateTime = seedAtUtc, ModifiedDateTime = seedAtUtc }
+            new User { Id = 1, Name = "User 1", CartVersion = 0, CreatedDateTime = seedAtUtc, ModifiedDateTime = seedAtUtc },
+            new User { Id = 2, Name = "User 2", CartVersion = 0, CreatedDateTime = seedAtUtc, ModifiedDateTime = seedAtUtc }
         );
 
         modelBuilder.Entity<CartHistory>()
