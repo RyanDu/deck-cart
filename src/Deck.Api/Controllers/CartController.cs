@@ -25,6 +25,11 @@ public class CartController(ICartService cartService) : ControllerBase
         }
     }
 
+    [HttpPost("replace")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(409)]
+    [ProducesResponseType(422)]
     public async Task<IActionResult> Replace([FromBody] ReplaceCartRequest request, CancellationToken ct)
     {
         try
