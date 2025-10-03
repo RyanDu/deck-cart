@@ -19,13 +19,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         // Seed initial data
         modelBuilder.Entity<Item>().HasData(
-            new Item { Id = 1, Name = "Item 1", Price = 1.11m, CreatedDateTime = seedAtUtc, ModifiedDateTime = seedAtUtc },
-            new Item { Id = 2, Name = "Item 2", Price = 2.22m, CreatedDateTime = seedAtUtc, ModifiedDateTime = seedAtUtc }
+            new Item { Id = 1, Name = "Item 1", Price = 1.11m, IsActive = true, CreatedDateTime = seedAtUtc, ModifiedDateTime = seedAtUtc },
+            new Item { Id = 2, Name = "Item 2", Price = 2.22m, IsActive = true, CreatedDateTime = seedAtUtc, ModifiedDateTime = seedAtUtc }
         );
 
         modelBuilder.Entity<User>().HasData(
-            new User { Id = 1, Name = "User 1", CartVersion = 0, CreatedDateTime = seedAtUtc, ModifiedDateTime = seedAtUtc },
-            new User { Id = 2, Name = "User 2", CartVersion = 0, CreatedDateTime = seedAtUtc, ModifiedDateTime = seedAtUtc }
+            new User { Id = 1, Name = "User 1", CartVersion = 0, IsActive = true, CreatedDateTime = seedAtUtc, ModifiedDateTime = seedAtUtc },
+            new User { Id = 2, Name = "User 2", CartVersion = 0, IsActive = true, CreatedDateTime = seedAtUtc, ModifiedDateTime = seedAtUtc }
         );
 
         modelBuilder.Entity<CartHistory>()

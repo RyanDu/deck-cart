@@ -43,7 +43,7 @@ public class CartService(AppDbContext dbContext) : ICartService
         }
 
         var distinctIds = itemIds.Distinct().ToArray();
-        var exists = await dbContext.Items.Where(i => distinctIds.Contains(i.Id))
+        var exists = await dbContext.Items.Where(i => distinctIds.Contains(i.Id) && i.IsActive)
                             .Select(i => i.Id)
                             .ToListAsync();
 
