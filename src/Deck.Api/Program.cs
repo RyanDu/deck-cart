@@ -49,6 +49,9 @@ builder.Services.AddOpenTelemetry()
         });
         t.AddHttpClientInstrumentation();
 
+        // Add self defined logs.
+        t.AddSource("deck-cart");
+
         // Add local console
         t.AddConsoleExporter();
     })
