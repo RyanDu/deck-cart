@@ -1,0 +1,6 @@
+@Deck.Api_HostAddress = http://localhost:5202
+
+GET {{Deck.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
