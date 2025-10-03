@@ -110,6 +110,38 @@ public class CartService(AppDbContext dbContext) : ICartService
             throw;
         }
     }
-    
+
     public string BuildWeakETag(int cartVersion) => $"W/\"{cartVersion}\"";
+
+    public async Task<int> GetCartVersionAsync(int userId, CancellationToken ct)
+    {
+        var v = await dbContext.Users
+            .Where(u => u.Id == userId)
+            .Select(u => (int?)u.CartVersion)
+            .FirstOrDefaultAsync(ct);
+        if (v is null) throw new KeyNotFoundException($"User {userId} not found");
+        return v.Value;
+    }
+    
+    public async Task<IReadOnlyList<CartHistoryDto>> GetHistoryAsync(int userId, int take, CancellationToken ct)
+    {
+        if (take <= 0 || take > 100) take = 5;
+
+        var exists = await dbContext.Users.AnyAsync(u => u.Id == userId, ct);
+        if (!exists) throw new KeyNotFoundException($"User {userId} not found");
+
+        var rows = await dbContext.CartHistory
+            .Where(h => h.UserId == userId)
+            .OrderByDescending(h => h.SnapshotAt)
+            .Take(take)
+            .Select(h => new CartHistoryDto
+            {
+                Id = h.Id,
+                SnapshotAt = h.SnapshotAt,
+                PayloadJson = h.PayloadJson
+            })
+            .ToListAsync(ct);
+
+        return rows;
+    }
 }
