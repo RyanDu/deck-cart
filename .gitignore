@@ -12,3 +12,4 @@ obj/
 *.db
 *.db-shm
 *.db-wal
+Migrations/
