@@ -6,4 +6,6 @@ public class CartHistory
     public int UserId { get; set; }
     public DateTime SnapshotAt { get; set; } = DateTime.UtcNow;
     public string PayloadJson { get; set; } = string.Empty;
+    public DateTime CreatedDateTime { get; set; } = DateTime.UtcNow;
+    public DateTime ModifiedDateTime { get; set; } = DateTime.UtcNow;
 }
