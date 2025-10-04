@@ -153,7 +153,12 @@ app.UseSerilogRequestLogging();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+
+     var migrateOnStartup = app.Configuration.GetValue<bool>("Ef:MigrateOnStartup", true);
+    if (!app.Environment.IsEnvironment("Testing") && migrateOnStartup)
+    {
+        db.Database.Migrate();
+    }
 }
 
 if (app.Environment.IsDevelopment())
@@ -170,3 +175,5 @@ app.UseMiddleware<Deck.Api.Middleware.ExceptionMappingMiddleware>();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }
