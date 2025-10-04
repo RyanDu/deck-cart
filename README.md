@@ -4,6 +4,7 @@
   
 
 A from-scratch, end‑to‑end backend exercise built with **.NET 8**, **ASP.NET Core**, **EF Core + SQLite**, **JWT auth**, **optimistic concurrency with ETag + If‑Match**,  request validation (**FluentValidation**), and observability (Serilog logs + OpenTelemetry traces). Includes **xUnit integration tests** using an in‑memory SQLite database.
+![API SWAGER UI](./assets/Screenshot%202025-10-03%20at%205.57.16 PM.png)
 
   
 

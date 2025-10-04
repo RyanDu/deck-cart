@@ -1,0 +1,14 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/*.user
+**/*.suo
+**/*.sln.DotSettings.user
+**/*.csproj.user
+**/TestResults/
+.git
+.github
+docker-compose*.yml
+README.md
+assets/
