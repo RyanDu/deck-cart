@@ -497,6 +497,82 @@ dotnet  test  tests/Deck.Tests  -l  "console;verbosity=detailed"
 
 ---
 
+# Docker
+
+Run the API in a container with SQLite persisted on your host. Two ways:
+
+## Option A — docker compose (recommended)
+```bash
+# Build and start
+docker compose up --build
+
+# Stop (keep data)
+docker compose down
+
+# Stop and remove containers, networks, etc. (keeps ./data)
+docker compose down --remove-orphans
+```
+
+## Option B — plain Docker
+```bash
+# Build image
+docker build -t deck-api:dev .
+
+# Create a host folder for SQLite persistence
+mkdir -p ./data
+
+# Run container (maps port 5202 and mounts ./data)
+docker run --rm -it   -p 5202:5202   -v "$PWD/data":/app/data   -e ASPNETCORE_ENVIRONMENT=Docker   -e ConnectionStrings__Default="Data Source=/app/data/deck.db"   deck-api:dev
+```
+
+## Open Swagger
+```
+http://localhost:5202
+```
+
+## Configuration notes
+- **Connection string override**: The container writes SQLite to `/app/data/deck.db`.  
+  Use an env var to point EF Core there:
+  ```bash
+  ConnectionStrings__Default=Data Source=/app/data/deck.db
+  ```
+- **Environment**: If you added `appsettings.Docker.json`, set:
+  ```bash
+  ASPNETCORE_ENVIRONMENT=Docker
+  ```
+- **JWT settings** (example):
+  ```bash
+  Jwt__Issuer=deck.local
+  Jwt__Audience=deck.api
+  Jwt__Key=please-change-me-32+chars
+  ```
+
+## Persistence
+- The `./data` folder on your host is mounted to `/app/data` in the container.  
+  Your database file will be **persisted** between runs.
+
+## Health & logs
+- Health (if enabled): `GET http://localhost:5202/healthz`
+- Logs: 
+  ```bash
+  docker compose logs -f            # with compose
+  docker logs -f <container-name>   # plain Docker
+  ```
+
+## Troubleshooting
+- **Port in use**: Change the left side of the mapping, e.g. `-p 8080:5202`.
+- **DB not created**: Ensure `Ef__MigrateOnStartup=true` (or run `dotnet ef database update` separately).
+- **Windows PowerShell volume path**: use `${PWD}` instead of `$PWD`:
+  ```powershell
+  docker run --rm -it `
+    -p 5202:5202 `
+    -v ${PWD}/data:/app/data `
+    -e ASPNETCORE_ENVIRONMENT=Docker `
+    -e ConnectionStrings__Default="Data Source=/app/data/deck.db" `
+    deck-api:dev
+  ```
+
+
   
 
 ## Contribution
