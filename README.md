@@ -527,7 +527,7 @@ docker run --rm -it   -p 5202:5202   -v "$PWD/data":/app/data   -e ASPNETCORE_EN
 
 ## Open Swagger
 ```
-http://localhost:5202
+http://localhost:5202/swagger/index.html
 ```
 
 ## Configuration notes
