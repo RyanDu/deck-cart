@@ -118,7 +118,7 @@ dotnet  run  --project  src/Deck.Api/Deck.Api.csproj
 
 ```
 
-http://localhost:5202
+http://localhost:5202/swagger/index.html
 
 ```
 
