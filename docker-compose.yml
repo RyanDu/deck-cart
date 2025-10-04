@@ -1,0 +1,22 @@
+services:
+  deck-api:
+    build: .
+    container_name: deck-api
+    ports:
+      - "5202:5202"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: Data Source=/app/data/deck.db
+      # JWT settings (override if you want different values in containers)
+      Jwt__Issuer: deck.local
+      Jwt__Audience: deck.api
+      Jwt__Key: please-change-me-32+chars
+      # Optional: if you use a config flag to control startup migrations:
+      Ef__MigrateOnStartup: "true"
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5202/healthz || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
